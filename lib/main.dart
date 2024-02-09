@@ -56,24 +56,15 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => getImage(source: ImageSource.camera),
-                      child: const Text('Capture Image', style: TextStyle(fontSize: 18)),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => getImage(source: ImageSource.gallery),
-                      child: const Text('Select Image', style: TextStyle(fontSize: 18)),
-                    ),
-                  ),
-                ],
+              ElevatedButton(
+                onPressed: () => selectImage(),
+                child: const Text('Select Image', style: TextStyle(fontSize: 18)),
               ),
               const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => goToNextPage(),
+                child: const Text('Next', style: TextStyle(fontSize: 18)),
+              ),
             ],
           ),
         ),
@@ -81,15 +72,37 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void getImage({required ImageSource source}) async {
-    final List<XFile>? files = await ImagePicker().pickMultiImage();
-
-    if (files != null) {
+  void selectImage() async {
+    final List<XFile>? selectedFiles = await ImagePicker().pickMultiImage();
+    if (selectedFiles != null) {
       setState(() {
-        for (int i = 0; i < files.length && i < 3; i++) {
-          imageFiles[i] = File(files[i].path);
+        for (int i = 0; i < selectedFiles.length && i < 3; i++) {
+          imageFiles[i] = File(selectedFiles[i].path);
         }
       });
     }
+  }
+
+  void goToNextPage() {
+    // Navigate to the next page
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NextPage()),
+    );
+  }
+}
+
+class NextPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Next Page'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: const Text('This is the next page.'),
+      ),
+    );
   }
 }
